@@ -162,3 +162,17 @@ variable "root_volume_disk_type" {
   type        = string
   default     = "pd-standard"
 }
+
+# Service Account Settings
+
+variable "service_account_email" {
+  description = "The email of the service account for the instance template. If none is provided the google cloud provider project service account is used."
+  type        = string
+  default     = null
+}
+
+variable "service_account_scopes" {
+  description = "A list of service account scopes that will be added to the Compute Instance Template in addition to the scopes automatically added by this module."
+  type        = list(string)
+  default     = []
+}
