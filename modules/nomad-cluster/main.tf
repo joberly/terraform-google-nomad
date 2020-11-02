@@ -7,7 +7,7 @@ terraform {
   required_version = ">= 0.12"
 }
 
-local {
+locals {
   cluster_name_prefix = "${trimsuffix(var.cluster_name, "-")}-"
 }
 
