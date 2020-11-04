@@ -3,6 +3,11 @@
 # You must provide a value for each of these parameters.
 # ---------------------------------------------------------------------------------------------------------------------
 
+variable "gcp_project_id" {
+  description = "The project to deploy the cluster in"
+  type        = string
+}
+
 variable "gcp_region" {
   description = "All GCP resources will be launched in this Region."
   type        = string
@@ -43,6 +48,12 @@ variable "startup_script" {
 # These parameters have reasonable defaults.
 # ---------------------------------------------------------------------------------------------------------------------
 
+variable "image_project_id" {
+  description = "The name of the GCP Project where the image is located. Useful when using a separate project for custom images. If empty, var.gcp_project_id will be used."
+  type        = string
+  default     = null
+}
+
 variable "instance_group_target_pools" {
   description = "To use a Load Balancer with the Consul cluster, you must populate this value. Specifically, this is the list of Target Pool URLs to which new Compute Instances in the Instance Group created by this module will be added. Note that updating the Target Pools attribute does not affect existing Compute Instances."
   type        = list(string)
@@ -65,6 +76,12 @@ variable "network_name" {
   description = "The name of the VPC Network where all resources should be created."
   type        = string
   default     = "default"
+}
+
+variable "subnetwork_name" {
+  description = "The name of the VPC Subnetwork where all resources should be created. Defaults to the default subnetwork for the network and region."
+  type        = string
+  default     = null
 }
 
 variable "custom_tags" {

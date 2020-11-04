@@ -17,7 +17,8 @@ locals {
 
 # Create the Managed Instance Group where Nomad will run.
 resource "google_compute_region_instance_group_manager" "nomad" {
-  name = "${var.cluster_name}-ig"
+  project = var.gcp_proect_id
+  name    = "${var.cluster_name}-ig"
 
   base_instance_name = var.cluster_name
   instance_template  = google_compute_instance_template.nomad.self_link
@@ -74,7 +75,7 @@ resource "google_compute_instance_template" "nomad" {
   disk {
     boot         = true
     auto_delete  = true
-    source_image = var.source_image
+    source_image = google_compute_image.image.self_link
     disk_size_gb = var.root_volume_disk_size_gb
     disk_type    = var.root_volume_disk_type
   }
@@ -128,4 +129,9 @@ module "firewall_rules" {
   http_port = 4646
   rpc_port  = 4647
   serf_port = 4648
+}
+
+data "google_compute_image" "image" {
+  name    = var.source_image
+  project = var.image_project_id != null ? var.image_project_id : var.gcp_project_id
 }
