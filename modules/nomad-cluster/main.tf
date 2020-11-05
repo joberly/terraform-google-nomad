@@ -21,8 +21,11 @@ resource "google_compute_region_instance_group_manager" "nomad" {
   name    = "${var.cluster_name}-ig"
 
   base_instance_name = var.cluster_name
-  instance_template  = google_compute_instance_template.nomad.self_link
   region             = var.gcp_region
+
+  version {
+    instance_template  = google_compute_instance_template.nomad.self_link
+  }
 
   # Restarting all Nomad servers at the same time will result in data loss and down time. Therefore, the update strategy
   # used to roll out a new GCE Instance Template must be a rolling update. But since Terraform does not yet support
