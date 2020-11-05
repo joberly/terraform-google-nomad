@@ -17,7 +17,7 @@ locals {
 
 # Create the Managed Instance Group where Nomad will run.
 resource "google_compute_region_instance_group_manager" "nomad" {
-  project = var.gcp_proect_id
+  project = var.gcp_project_id
   name    = "${var.cluster_name}-ig"
 
   base_instance_name = var.cluster_name
@@ -49,8 +49,6 @@ resource "google_compute_region_instance_group_manager" "nomad" {
 # Create the Instance Template that will be used to populate the Managed Instance Group.
 # NOTE: This Compute Instance Template is only created if var.assign_public_ip_addresses is true.
 resource "google_compute_instance_template" "nomad" {
-  count = var.assign_public_ip_addresses ? 1 : 0
-
   name_prefix = local.cluster_name_prefix
   description = var.cluster_description
 
