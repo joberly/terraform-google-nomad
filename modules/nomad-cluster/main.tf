@@ -120,7 +120,7 @@ module "firewall_rules" {
   source = "../nomad-firewall-rules"
 
   network_name       = var.network_name
-  network_project_id = var.network_project_id
+  network_project_id = var.network_project_id != null ? var.network_project_id : var.gcp_project_id
   cluster_name       = var.cluster_name
   cluster_tag_name   = var.cluster_tag_name
 
