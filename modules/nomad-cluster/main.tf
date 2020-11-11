@@ -24,7 +24,7 @@ resource "google_compute_region_instance_group_manager" "nomad" {
   region             = var.gcp_region
 
   version {
-    instance_template  = google_compute_instance_template.nomad.self_link
+    instance_template = google_compute_instance_template.nomad.self_link
   }
 
   # Restarting all Nomad servers at the same time will result in data loss and down time. Therefore, the update strategy
@@ -82,7 +82,10 @@ resource "google_compute_instance_template" "nomad" {
   }
 
   network_interface {
-    network = var.network_name
+    network            = var.subnetwork_name != null ? null : var.network_name
+    subnetwork         = var.subnetwork_name != null ? var.subnetwork_name : null
+    subnetwork_project = var.network_project_id != null ? var.network_project_id : null
+
     // If public IP addresses are requested, add an empty access_config block
     // to automatically assign public IP addresses.
     dynamic "access_config" {
@@ -116,8 +119,10 @@ resource "google_compute_instance_template" "nomad" {
 module "firewall_rules" {
   source = "../nomad-firewall-rules"
 
-  cluster_name     = var.cluster_name
-  cluster_tag_name = var.cluster_tag_name
+  network_name       = var.network_name
+  network_project_id = var.network_project_id
+  cluster_name       = var.cluster_name
+  cluster_tag_name   = var.cluster_tag_name
 
   allowed_inbound_cidr_blocks_http = var.allowed_inbound_cidr_blocks_http
   allowed_inbound_cidr_blocks_rpc  = var.allowed_inbound_cidr_blocks_rpc

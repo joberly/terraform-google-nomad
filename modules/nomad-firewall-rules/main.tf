@@ -19,6 +19,8 @@ terraform {
 resource "google_compute_firewall" "allow_inbound_http" {
   count = length(var.allowed_inbound_cidr_blocks_http) + length(var.allowed_inbound_tags_http) > 0 ? 1 : 0
 
+  project = var.network_project_id != null ? var.network_project_id : var.gcp_project_id
+
   name    = "${var.cluster_name}-rule-external-http-access"
   network = var.network_name
 
@@ -38,6 +40,8 @@ resource "google_compute_firewall" "allow_inbound_http" {
 resource "google_compute_firewall" "allow_inbound_rpc" {
   count = length(var.allowed_inbound_cidr_blocks_rpc) + length(var.allowed_inbound_tags_rpc) > 0 ? 1 : 0
 
+  project = var.network_project_id != null ? var.network_project_id : var.gcp_project_id
+
   name    = "${var.cluster_name}-rule-external-rpc-access"
   network = var.network_name
 
@@ -56,6 +60,8 @@ resource "google_compute_firewall" "allow_inbound_rpc" {
 # Specify which traffic is allowed into the Nomad cluster for inbound serf requests
 resource "google_compute_firewall" "allow_inbound_serf" {
   count = length(var.allowed_inbound_cidr_blocks_serf) + length(var.allowed_inbound_tags_serf) > 0 ? 1 : 0
+
+  project = var.network_project_id != null ? var.network_project_id : var.gcp_project_id
 
   name    = "${var.cluster_name}-rule-external-serf-access"
   network = var.network_name

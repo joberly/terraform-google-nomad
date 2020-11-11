@@ -54,6 +54,12 @@ variable "image_project_id" {
   default     = null
 }
 
+variable "network_project_id" {
+  description = "The name of the GCP Project where the network is located. Useful when using networks shared between projects. If empty, var.gcp_project_id will be used."
+  type        = string
+  default     = null
+}
+
 variable "instance_group_target_pools" {
   description = "To use a Load Balancer with the Consul cluster, you must populate this value. Specifically, this is the list of Target Pool URLs to which new Compute Instances in the Instance Group created by this module will be added. Note that updating the Target Pools attribute does not affect existing Compute Instances."
   type        = list(string)

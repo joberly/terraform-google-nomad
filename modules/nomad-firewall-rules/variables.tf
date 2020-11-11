@@ -24,6 +24,12 @@ variable "network_name" {
   default     = "default"
 }
 
+variable "network_project_id" {
+  description = "The name of the GCP Project where the network is located. Useful when using networks shared between projects. If empty, var.gcp_project_id will be used."
+  type        = string
+  default     = null
+}
+
 # Firewall Ports
 
 variable "http_port" {
