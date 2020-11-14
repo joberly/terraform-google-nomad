@@ -30,6 +30,7 @@ function print_usage {
   echo -e "  --user\t\tThe user to run Nomad as. Optional. Default is to use the owner of --config-dir."
   echo -e "  --use-sudo\t\tIf set, run the Nomad agent with sudo. By default, sudo is only used if --client is set."
   echo -e "  --skip-nomad-config\tIf this flag is set, don't generate a Nomad configuration file. Optional. Default is false."
+  echo -e "  --datacenter\t\tThe name of the datacenter Nomad is running in. Optional. If not specified, will default to GCP region name."
   echo
   echo "Example:"
   echo
@@ -147,6 +148,7 @@ function generate_nomad_config {
   local readonly num_servers="$3"
   local readonly config_dir="$4"
   local readonly user="$5"
+  local readonly datacenter="$6"
   local readonly config_path="$config_dir/$NOMAD_CONFIG_FILE"
 
   local instance_name=""
@@ -157,7 +159,6 @@ function generate_nomad_config {
   instance_name=$(get_instance_name)
   instance_ip_address=$(get_instance_ip_address)
   instance_region=$(get_instance_region)
-  zone=$(get_instance_zone)
 
   local server_config=""
   if [[ "$server" == "true" ]]; then
@@ -182,7 +183,7 @@ EOF
 
   log_info "Creating default Nomad config file in $config_path"
   cat > "$config_path" <<EOF
-datacenter = "$zone"
+datacenter = "$datacenter"
 name       = "$instance_name"
 region     = "$instance_region"
 bind_addr  = "0.0.0.0"
@@ -255,6 +256,7 @@ function run {
   local user=""
   local skip_nomad_config="false"
   local use_sudo=""
+  local datacenter=""
   local all_args=()
 
   while [[ $# > 0 ]]; do
@@ -312,6 +314,11 @@ function run {
       --use-sudo)
         use_sudo="true"
         ;;
+      --datacenter)
+        assert_not_empty "$key" "$2"
+        datacenter="$2"
+        shift
+        ;;
       --help)
         print_usage
         exit
@@ -366,10 +373,14 @@ function run {
     user=$(get_owner_of_path "$config_dir")
   fi
 
+  if [[ -z "$datacenter" ]]; then
+    datacenter=$(get_instance_region)
+  fi
+
   if [[ "$skip_nomad_config" == "true" ]]; then
     log_info "The --skip-nomad-config flag is set, so will not generate a default Nomad config file."
   else
-    generate_nomad_config "$server" "$client" "$num_servers" "$config_dir" "$user"
+    generate_nomad_config "$server" "$client" "$num_servers" "$config_dir" "$user" "$datacenter"
   fi
 
   generate_supervisor_config "$SUPERVISOR_CONFIG_PATH" "$config_dir" "$data_dir" "$bin_dir" "$log_dir" "$user" "$use_sudo"
