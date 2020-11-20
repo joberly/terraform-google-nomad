@@ -58,6 +58,8 @@ resource "google_compute_instance_template" "nomad" {
   instance_description = var.cluster_description
   machine_type         = var.machine_type
 
+  labels = var.cluster_labels
+
   tags                    = concat([var.cluster_tag_name], var.custom_tags)
   metadata_startup_script = var.startup_script
   metadata = merge(
