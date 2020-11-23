@@ -75,6 +75,19 @@ resource "google_compute_instance_template" "nomad" {
     preemptible         = false
   }
 
+  dynamic "guest_accelerator" {
+    for_each = var.guest_accelerator_count > 0 ? [
+      {
+        type  = var.guest_accelerator_type
+        count = var.guest_accelerator_count
+      }] : null
+
+    content {
+      type  = guest_accelerator.value.type
+      count = guest_accelerator.value.count
+    }
+  }
+
   disk {
     boot         = true
     auto_delete  = true

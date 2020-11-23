@@ -228,6 +228,20 @@ variable "instance_group_update_policy_min_ready_sec" {
   default     = 300
 }
 
+# GPU Settings
+
+variable "guest_accelerator_type" {
+  description = "Guest accelerator type for each instance in this cluster."
+  type        = string
+  default     = null
+}
+
+variable "guest_accelerator_count" {
+  description = "Guest accelerator count for each instance in this cluster."
+  type        = number
+  default     = 0
+}
+
 # Disk Settings
 
 variable "root_volume_disk_size_gb" {
