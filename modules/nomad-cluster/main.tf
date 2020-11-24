@@ -71,7 +71,7 @@ resource "google_compute_instance_template" "nomad" {
 
   scheduling {
     automatic_restart   = true
-    on_host_maintenance = "MIGRATE"
+    on_host_maintenance = var.guest_accelerator_count == 0 ? "MIGRATE" : "TERMINATE"
     preemptible         = false
   }
 
