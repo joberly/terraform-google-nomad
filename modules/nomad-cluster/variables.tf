@@ -180,6 +180,12 @@ variable "allowed_inbound_tags_serf" {
 
 # Update Policy
 
+variable "instance_group_distribution_policy_zones" {
+  description = "The specific zones across which the instance group manager distributes all instances."
+  type        = list(string)
+  default     = null
+}
+
 variable "instance_group_update_policy_type" {
   description = "The type of update process. You can specify either PROACTIVE so that the instance group manager proactively executes actions in order to bring instances to their target versions or OPPORTUNISTIC so that no action is proactively executed but the update will be performed as part of other actions (for example, resizes or recreateInstances calls)."
   type        = string

@@ -23,6 +23,8 @@ resource "google_compute_region_instance_group_manager" "nomad" {
   base_instance_name = var.cluster_name
   region             = var.gcp_region
 
+  distribution_policy_zones = var.instance_group_distribution_policy_zones
+
   version {
     instance_template = google_compute_instance_template.nomad.self_link
   }
